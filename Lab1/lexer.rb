@@ -61,19 +61,73 @@ class Lexer
         complete_word = complete.first
         s = complete[1]
         read_next = false
+        find_email = false
 
-        if key_words.include? complete_word
-          @lex_list.push($KEY_WORDS_TOKENS[complete_word])
-          puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
-        else
-          if $IDENTIFICATORS_TOKENS.keys().include? complete_word
-            @lex_list.push($IDENTIFICATORS_TOKENS[complete_word])
+        if s == "@"
+          s = file.getc
+          if chars.include? s.ord
+            col_for = @col
+            row_for = @row
+            @col += 1
+          else
+            puts "Lexem error: unknow symbol on row: " + @row.to_s + ", col: " + @col.to_s
+            @col += 1
+          end
+          second_part = word_indicate(file, chars, digits, s)
+          complete_second_word = second_part.first
+          s = second_part[1]
+          if s == '.'
+            s = file.getc
+            if chars.include? s.ord
+              @col += 1
+            else
+              puts "Lexem error: unknow symbol on row: " + @row.to_s + ", col: " + @col.to_s
+              @col += 1
+            end
+            third_part = word_indicate(file, chars, digits, s)
+            complete_third_word = third_part.first
+            s = third_part[1]
+            # puts third_part
+            if complete_third_word.length > 1
+              puts "find email - " + complete_word + "@" + complete_second_word + "." + complete_third_word
+              find_email = true
+            end
+          else
+            puts "Lexem error: unknow symbol on row: " + col_for.to_s + ", col: " + row_for.to_s
+          end
+
+          if !find_email
+            if key_words.include? complete_second_word
+              @lex_list.push($KEY_WORDS_TOKENS[complete_second_word])
+              puts "find token - " + complete_second_word + " on row: " + @row.to_s + "  col: " + (@col - complete_second_word.length).to_s
+            else
+              if $IDENTIFICATORS_TOKENS.keys().include? complete_second_word
+                @lex_list.push($IDENTIFICATORS_TOKENS[complete_second_word])
+                puts "find token - " + complete_second_word + " on row: " + @row.to_s + "  col: " + (@col - complete_second_word.length).to_s
+              else
+                $IDENTIFICATORS_TOKENS[complete_second_word] = ident_counter
+                puts "find token - " + complete_second_word + " on row: " + @row.to_s + "  col: " + (@col - complete_second_word.length).to_s
+                @lex_list.push(ident_counter)
+                ident_counter += 1
+              end
+            end
+          end
+        end
+        # puts complete_word
+        if !find_email
+          if key_words.include? complete_word
+            @lex_list.push($KEY_WORDS_TOKENS[complete_word])
             puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
           else
-            $IDENTIFICATORS_TOKENS[complete_word] = ident_counter
-            puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
-            @lex_list.push(ident_counter)
-            ident_counter += 1
+            if $IDENTIFICATORS_TOKENS.keys().include? complete_word
+              @lex_list.push($IDENTIFICATORS_TOKENS[complete_word])
+              puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
+            else
+              $IDENTIFICATORS_TOKENS[complete_word] = ident_counter
+              puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
+              @lex_list.push(ident_counter)
+              ident_counter += 1
+            end
           end
         end
 
