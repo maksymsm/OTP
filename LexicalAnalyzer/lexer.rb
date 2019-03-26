@@ -1,4 +1,4 @@
-require "./print"
+require "./LexicalAnalyzer/print"
 
 class Lexer
   def initialize(file_name)
