@@ -44,7 +44,7 @@ class Lexer
           comment = complete[1]
           if complete.first != nil && !comment
             @lex_list.push($SEPARATORS_TOKENS[s])
-            puts "find token - "+ s + " on row: " + @row.to_s + "  col: " + @col.to_s
+            # puts "find token - "+ s + " on row: " + @row.to_s + "  col: " + @col.to_s
             @col += 1
             read_next = false
             s = complete.first
@@ -52,7 +52,7 @@ class Lexer
           #cur, false
         else
           @lex_list.push($SEPARATORS_TOKENS[s])
-          puts "find token - " + s + " on row: " + @row.to_s + "  col: " + @col.to_s
+          # puts "find token - " + s + " on row: " + @row.to_s + "  col: " + @col.to_s
         end
 
       elsif chars.include? s.ord
@@ -64,14 +64,14 @@ class Lexer
 
         if key_words.include? complete_word
           @lex_list.push($KEY_WORDS_TOKENS[complete_word])
-          puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
+          # puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
         else
           if $IDENTIFICATORS_TOKENS.keys().include? complete_word
             @lex_list.push($IDENTIFICATORS_TOKENS[complete_word])
-            puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
+            # puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
           else
             $IDENTIFICATORS_TOKENS[complete_word] = ident_counter
-            puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
+            # puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
             @lex_list.push(ident_counter)
             ident_counter += 1
           end
@@ -86,11 +86,11 @@ class Lexer
 
         if $DIGITS_TOKENS.keys().include? complete_digit
           @lex_list.push($DIGITS_TOKENS[complete_digit])
-          puts "find token - " + complete_digit + " on row: " + @row.to_s + "  col: " + (@col - complete_digit.length).to_s
+          # puts "find token - " + complete_digit + " on row: " + @row.to_s + "  col: " + (@col - complete_digit.length).to_s
         else
           $DIGITS_TOKENS[complete_digit] = constant_counter
           @lex_list.push(constant_counter)
-          puts "find token - " + complete_digit + " on row: " + @row.to_s + "  col: " + (@col - complete_digit.length).to_s
+          # puts "find token - " + complete_digit + " on row: " + @row.to_s + "  col: " + (@col - complete_digit.length).to_s
           constant_counter += 1
         end
 
