@@ -12,6 +12,7 @@ class Lexer
     separators = ($SEPARATORS_TOKENS.keys).to_a
     key_words = ($KEY_WORDS_TOKENS.keys).to_a
     @lex_list = []
+    @position_lex = []
     @col = 0
     @row = 1
     read_next = true
@@ -44,7 +45,8 @@ class Lexer
           comment = complete[1]
           if complete.first != nil && !comment
             @lex_list.push($SEPARATORS_TOKENS[s])
-            puts "find token - "+ s + " on row: " + @row.to_s + "  col: " + @col.to_s
+            @position_lex.push([@row, @col])
+            # puts "find token - "+ s + " on row: " + @row.to_s + "  col: " + @col.to_s
             @col += 1
             read_next = false
             s = complete.first
@@ -52,7 +54,8 @@ class Lexer
           #cur, false
         else
           @lex_list.push($SEPARATORS_TOKENS[s])
-          puts "find token - " + s + " on row: " + @row.to_s + "  col: " + @col.to_s
+          @position_lex.push([@row, @col])
+          # puts "find token - " + s + " on row: " + @row.to_s + "  col: " + @col.to_s
         end
 
       elsif chars.include? s.ord
@@ -64,15 +67,18 @@ class Lexer
 
         if key_words.include? complete_word
           @lex_list.push($KEY_WORDS_TOKENS[complete_word])
-          puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
+          @position_lex.push([@row, @col - complete_word.to_s.length])
+          # puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
         else
           if $IDENTIFICATORS_TOKENS.keys().include? complete_word
             @lex_list.push($IDENTIFICATORS_TOKENS[complete_word])
-            puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
+            @position_lex.push([@row, @col - complete_word.to_s.length])
+            # puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
           else
             $IDENTIFICATORS_TOKENS[complete_word] = ident_counter
-            puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
+            # puts "find token - " + complete_word + " on row: " + @row.to_s + "  col: " + (@col - complete_word.length).to_s
             @lex_list.push(ident_counter)
+            @position_lex.push([@row, @col - ident_counter.to_s.length - 1])
             ident_counter += 1
           end
         end
@@ -86,16 +92,19 @@ class Lexer
 
         if $DIGITS_TOKENS.keys().include? complete_digit
           @lex_list.push($DIGITS_TOKENS[complete_digit])
-          puts "find token - " + complete_digit + " on row: " + @row.to_s + "  col: " + (@col - complete_digit.length).to_s
+          @position_lex.push([@row, @col - complete_digit.to_s.length])
+          # puts "find token - " + complete_digit + " on row: " + @row.to_s + "  col: " + (@col - complete_digit.length).to_s
         else
           $DIGITS_TOKENS[complete_digit] = constant_counter
           @lex_list.push(constant_counter)
-          puts "find token - " + complete_digit + " on row: " + @row.to_s + "  col: " + (@col - complete_digit.length).to_s
+          @position_lex.push([@row, @col - constant_counter.to_s.length])
+          # puts "find token - " + complete_digit + " on row: " + @row.to_s + "  col: " + (@col - complete_digit.length).to_s
           constant_counter += 1
         end
 
       else
-        puts "Lexem error: unknow symbol on row: " + @row.to_s + ", col: " + @col.to_s
+        $error.push("Lexem error: unknow symbol on row: " + @row.to_s + ", col: " + @col.to_s)
+        puts $error.last
       end
     end
 
@@ -103,6 +112,8 @@ class Lexer
       printTokens()
       pp "Lexer list - " + @lex_list.to_s
     end
+    $position_token = @position_lex
+    @lex_list
   end
 
   private
@@ -135,7 +146,8 @@ class Lexer
         end
       end
       if open_comment
-        puts "Lexem errer: Unclosed comment!"
+        $error.push("Lexem errer: Unclosed comment!")
+        puts $error.last
       end
       return [nil, true]
     else

@@ -2,6 +2,8 @@ $KEY_WORDS_TOKENS = {"PROCEDURE" => 401, "BEGIN" => 402, "END" => 403, "RETURN" 
 $SEPARATORS_TOKENS = {";" => 59, "," => 44, "(" => 40, ")" => 41}
 $IDENTIFICATORS_TOKENS = {}
 $DIGITS_TOKENS = {}
+$position_token = []
+$error = []
 
 def printTokens
   puts
