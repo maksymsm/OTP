@@ -1,7 +1,9 @@
+require "./SyntaxAnalyzer/TreeNode"
+
 class Tree
   attr_accessor :root, :current_element
   def initialize()
-    @root = Node.new("signal-program", nil)
+    @root = Node.new(nil, nil)
     @current_element = @root
   end
 
@@ -20,12 +22,20 @@ class Tree
   def __print_tree(root, depth)
         print "\n"
         for i in (0..depth).to_a
-            print " "
+            print "  "
         end
         unless root.leaves.empty?
-            print '<' + root.val.to_s + '>'
+            if root.val.to_s == 'identifier' || root.val.to_s == 'unsigned-integer' || root.val.to_s == 'empty' || root.val.to_s == 'empty-block'
+              print '<' + root.val.to_s + '>'
+            else
+              print root.val.to_s
+            end
         else
+          if root.val.to_s == 'identifier' || root.val.to_s == 'unsigned-integer' || root.val.to_s == 'empty' || root.val.to_s == 'empty-block'
+            print '<' + root.val.to_s + '>'
+          else
             print root.val.to_s
+          end
         end
 
         for leaf in root.leaves
