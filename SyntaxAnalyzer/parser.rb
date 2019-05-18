@@ -1,5 +1,6 @@
 require "./SyntaxAnalyzer/machine_Knuth"
 require "./SyntaxAnalyzer/Tree"
+require "./LexicalAnalyzer/lexer"
 
 class Parser
   def initialize(tokens, position_token)
@@ -90,11 +91,12 @@ class Parser
         take_address = 'true'
       elsif command == 'false'
         if !find_error && $table_Knuth[stack.last][address_false] != 'empty' && $table_Knuth[stack.last][address_false] != ' ' && $table_Knuth[stack.last][address_false] != '  '
-          if $table_Knuth[table_index][code_operation] != 'unsigned-integer' && ($IDENTIFICATORS_TOKENS.include? get_token_by_key(@tokens[token_index]))
+          if $table_Knuth[table_index][code_operation] != 'unsigned-integer'
             pp $table_Knuth[stack[-2]]
             pp $table_Knuth[stack.last]
             pp $table_Knuth[table_index]
             puts "Syntax error: expected: " + $table_Knuth[table_index][code_operation] + " on row: " +  @pos_tokens[token_index][0].to_s + ", col: " + @pos_tokens[token_index][1].to_s
+            $error.push("Syntax error: expected: " + $table_Knuth[table_index][code_operation] + " on row: " +  @pos_tokens[token_index][0].to_s + ", col: " + @pos_tokens[token_index][1].to_s)
             find_error = true
             break
           end
@@ -113,7 +115,7 @@ class Parser
         break
       end
     end
-    @tree.print_tree
+    @tree
   end
 
 

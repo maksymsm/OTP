@@ -26,16 +26,14 @@ class Tree
         end
         unless root.leaves.empty?
             if root.val.to_s == 'identifier' || root.val.to_s == 'unsigned-integer' || root.val.to_s == 'empty' || root.val.to_s == 'empty-block'
-              print '<' + root.val.to_s + '>'
-            else
-              print root.val.to_s
+              root.val = '<' + root.val.to_s + '>'
             end
+            print root.val.to_s
         else
           if root.val.to_s == 'identifier' || root.val.to_s == 'unsigned-integer' || root.val.to_s == 'empty' || root.val.to_s == 'empty-block'
-            print '<' + root.val.to_s + '>'
-          else
-            print root.val.to_s
+            root.val = '<' + root.val.to_s + '>'
           end
+          print root.val.to_s
         end
 
         for leaf in root.leaves

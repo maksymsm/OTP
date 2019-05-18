@@ -1,0 +1,33 @@
+.model small
+.stack 100h
+.data
+//some data here
+.code
+
+MAX proc
+  push ebp
+  mov ebp, esp
+  mov eax, [ebp + 8]  ; put param FIRST to ebx
+  mov ebx, [ebp + 12]  ; put param SECOND to ecx
+  mov ecx, [ebp + 16]  ; put param THIRD to edx
+  ; some action
+  pop ebp
+  ret 12
+MAX endp
+FUNC proc
+  push ebp
+  mov ebp, esp
+  mov eax, [ebp + 8]  ; put param PAR to ebx
+  ; some action
+  pop ebp
+  ret 4
+FUNC endp
+
+MAIN proc
+  push 4
+  call FUNC
+
+  Code generator error: To MAX procedure pass 4 param, but expected 3
+  ret
+MAIN endp
+end MAIN
